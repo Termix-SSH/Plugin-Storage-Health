@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "tables": {
+    "hosts": {
+      "columns": {
+        "id": {
+          "type": "id",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "hostId": {
+          "type": "refHost",
+          "notNull": true
+        },
+        "userId": {
+          "type": "refUser",
+          "length": 255,
+          "notNull": true
+        },
+        "alerts": {
+          "type": "boolean",
+          "notNull": true,
+          "defaultValue": true
+        },
+        "intervalMin": {
+          "type": "integer",
+          "notNull": true,
+          "defaultValue": 15
+        },
+        "tempWarnC": {
+          "type": "integer",
+          "notNull": true,
+          "defaultValue": 0
+        },
+        "tempCritC": {
+          "type": "integer",
+          "notNull": true,
+          "defaultValue": 0
+        },
+        "wearWarnPct": {
+          "type": "integer",
+          "notNull": true,
+          "defaultValue": 80
+        },
+        "thinWarnPct": {
+          "type": "integer",
+          "notNull": true,
+          "defaultValue": 90
+        },
+        "createdAt": {
+          "type": "timestamp",
+          "notNull": true,
+          "defaultNow": true
+        }
+      },
+      "indexes": [
+        {
+          "name": "idx_p_storage_health_hosts_host",
+          "columns": [
+            "hostId"
+          ]
+        }
+      ]
+    },
+    "events": {
+      "columns": {
+        "id": {
+          "type": "id",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "hostId": {
+          "type": "integer",
+          "notNull": true
+        },
+        "at": {
+          "type": "bigint",
+          "notNull": true
+        },
+        "type": {
+          "type": "varchar",
+          "length": 40,
+          "notNull": true
+        },
+        "text": {
+          "type": "varchar",
+          "length": 300,
+          "notNull": true
+        }
+      },
+      "indexes": [
+        {
+          "name": "idx_p_storage_health_events_host_at",
+          "columns": [
+            "hostId",
+            "at"
+          ]
+        }
+      ]
+    }
+  }
+}
