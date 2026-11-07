@@ -117,6 +117,34 @@ describe(`${manifest.id} frontend`, () => {
     );
   });
 
+  it("draws history charts that have no fixed range", async () => {
+    const now = Math.floor(Date.now() / 1000);
+    const points = Array.from({ length: 4 }, (_, i) => ({
+      t: now - (4 - i) * 600,
+      p: 38 + i,
+      w: null,
+      h: 1000 + i,
+      r: 2,
+    }));
+    const mock = api(view());
+    const get = (mock as unknown as { get: ReturnType<typeof vi.fn> }).get;
+    const base = get.getMockImplementation() as (
+      url: string,
+      config?: unknown,
+    ) => Promise<unknown>;
+    get.mockImplementation(async (url: string, config?: unknown) =>
+      url.split("?")[0].endsWith("/history")
+        ? { data: { points } }
+        : base(url, config),
+    );
+    rendered = await renderWithApp(plugin, { manifest, locales, api: mock });
+    rendered.renderTab("storage-health", { isVisible: true, host });
+    fireEvent.click(await screen.findByText(/sda \| WDC/));
+    expect(await screen.findByText(locales.history.temp)).toBeTruthy();
+    expect(screen.getByText(locales.history.bad)).toBeTruthy();
+    expect(screen.queryByText(/Invalid Date/)).toBeNull();
+  });
+
   it("disables tests without edit access", async () => {
     rendered = await renderWithApp(plugin, {
       manifest,

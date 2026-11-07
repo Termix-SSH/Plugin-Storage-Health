@@ -44,11 +44,9 @@ interface Props {
   onChanged: () => void;
 }
 
-function stamp(t: number, range: HistoryRange): string {
-  const d = new Date(t * 1000);
-  return range === "24h"
-    ? d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-    : d.toLocaleDateString([], { month: "short", day: "numeric" });
+// LineChart reads ISO times and labels the axis itself.
+function stamp(t: number): string {
+  return new Date(t * 1000).toISOString();
 }
 
 function Charts({
@@ -75,9 +73,15 @@ function Charts({
     };
   }, [hostId, device.id, range, isVisible]);
 
-  const stamps = (points ?? []).map((p) => stamp(p.t, range));
+  const stamps = (points ?? []).map((p) => stamp(p.t));
   const col = (key: "p" | "w" | "r") => (points ?? []).map((p) => p[key]);
   const has = (key: "p" | "w" | "r") => col(key).some((v) => v !== null);
+  // LineChart needs a range, so charts without a fixed one fit their data.
+  const fit = (key: "p" | "w" | "r"): [number, number] => {
+    const values = col(key).filter((v): v is number => v !== null);
+    const max = Math.max(1, ...values);
+    return [0, Math.ceil(max * 1.2)];
+  };
   const blocks: Array<{
     key: "p" | "w" | "r";
     title: string;
@@ -127,7 +131,7 @@ function Charts({
                     },
                   ]}
                   timestamps={stamps}
-                  domain={b.domain}
+                  domain={b.domain ?? fit(b.key)}
                   yFormatter={(v) => `${Math.round(v)}${b.unit}`}
                   height={140}
                 />
