@@ -13,6 +13,7 @@ import {
   PanelList,
   Segmented,
   StatTile,
+  TileStack,
   TileWall,
   ToolbarBand,
   InlineView,
@@ -89,7 +90,7 @@ function Charts({
   ];
 
   return (
-    <div className="flex flex-col border-t border-border">
+    <div className="flex flex-col">
       <ToolbarBand>
         <Segmented<HistoryRange>
           value={range}
@@ -111,7 +112,7 @@ function Charts({
         blocks
           .filter((b) => has(b.key))
           .map((b) => (
-            <div key={b.key} className="border-b border-border">
+            <div key={b.key} className="border-b border-border last:border-b-0">
               <div className="px-3 pt-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
                 {b.title}
               </div>
@@ -214,79 +215,84 @@ function Detail({
         </>
       }
     >
-      {device.note && (
-        <p className="border-b border-border px-3 py-2 text-xs text-muted-foreground">
-          {device.note}
-        </p>
-      )}
-      <TileWall minWidth={160}>
-        <StatTile
-          label={t("detail.health")}
-          icon={<HardDrive className="size-3.5" />}
-          value={t(`health.${device.health}`)}
-          tone={statTone(device.health)}
-        />
-        <StatTile
-          label={t("detail.temp")}
-          icon={<Thermometer className="size-3.5" />}
-          value={formatNumber(device.tempC)}
-          unit="C"
-        />
-        <StatTile
-          label={t("detail.wear")}
-          icon={<HardDrive className="size-3.5" />}
-          value={formatNumber(device.wearPct)}
-          unit="%"
-          percent={device.wearPct}
-        />
-        <StatTile
-          label={t("detail.hours")}
-          icon={<HardDrive className="size-3.5" />}
-          value={formatHours(device.powerOnHours)}
-        />
-      </TileWall>
-      <div className="border-t border-border p-3">
-        <InfoGrid
-          items={[
-            { label: t("detail.model"), value: device.model },
-            { label: t("detail.serial"), value: device.serial, mono: true },
-            { label: t("detail.kind"), value: t(`kind.${device.kind}`) },
-            { label: t("detail.size"), value: formatBytes(device.sizeBytes) },
-            {
-              label: t("detail.reallocated"),
-              value: formatNumber(device.reallocated),
-            },
-            { label: t("detail.pending"), value: formatNumber(device.pending) },
-            {
-              label: t("detail.uncorrectable"),
-              value: formatNumber(device.uncorrectable),
-            },
-            {
-              label: t("detail.mediaErrors"),
-              value: formatNumber(device.mediaErrors),
-            },
-            { label: t("detail.selfTest"), value: device.selfTest },
-          ]}
-        />
-      </div>
-      {device.attributes.length > 0 && (
-        <div className="border-t border-border">
-          <div className="px-3 pt-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-            {t("detail.attributes")}
-          </div>
-          <PanelList>
-            {device.attributes.map((a, index) => (
-              <ListRow
-                key={a.id}
-                stripe={index}
-                title={`${a.id} ${a.name}`}
-                meta={t("detail.attrMeta", { value: a.value, raw: a.raw })}
-              />
-            ))}
-          </PanelList>
+      <TileStack>
+        {device.note && (
+          <p className="px-3 py-2 text-xs text-muted-foreground">
+            {device.note}
+          </p>
+        )}
+        <TileWall minWidth={160}>
+          <StatTile
+            label={t("detail.health")}
+            icon={<HardDrive className="size-3.5" />}
+            value={t(`health.${device.health}`)}
+            tone={statTone(device.health)}
+          />
+          <StatTile
+            label={t("detail.temp")}
+            icon={<Thermometer className="size-3.5" />}
+            value={formatNumber(device.tempC)}
+            unit="C"
+          />
+          <StatTile
+            label={t("detail.wear")}
+            icon={<HardDrive className="size-3.5" />}
+            value={formatNumber(device.wearPct)}
+            unit="%"
+            percent={device.wearPct}
+          />
+          <StatTile
+            label={t("detail.hours")}
+            icon={<HardDrive className="size-3.5" />}
+            value={formatHours(device.powerOnHours)}
+          />
+        </TileWall>
+        <div className="p-3">
+          <InfoGrid
+            items={[
+              { label: t("detail.model"), value: device.model },
+              { label: t("detail.serial"), value: device.serial, mono: true },
+              { label: t("detail.kind"), value: t(`kind.${device.kind}`) },
+              { label: t("detail.size"), value: formatBytes(device.sizeBytes) },
+              {
+                label: t("detail.reallocated"),
+                value: formatNumber(device.reallocated),
+              },
+              {
+                label: t("detail.pending"),
+                value: formatNumber(device.pending),
+              },
+              {
+                label: t("detail.uncorrectable"),
+                value: formatNumber(device.uncorrectable),
+              },
+              {
+                label: t("detail.mediaErrors"),
+                value: formatNumber(device.mediaErrors),
+              },
+              { label: t("detail.selfTest"), value: device.selfTest },
+            ]}
+          />
         </div>
-      )}
-      <Charts hostId={hostId} device={device} isVisible={isVisible} />
+        {device.attributes.length > 0 && (
+          <div>
+            <div className="px-3 pt-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+              {t("detail.attributes")}
+            </div>
+            <PanelList>
+              {device.attributes.map((a, index) => (
+                <ListRow
+                  key={a.id}
+                  stripe={index}
+                  title={`${a.id} ${a.name}`}
+                  meta={t("detail.attrMeta", { value: a.value, raw: a.raw })}
+                />
+              ))}
+            </PanelList>
+          </div>
+        )}
+        <Charts hostId={hostId} device={device} isVisible={isVisible} />
+      </TileStack>
     </InlineView>
   );
 }
