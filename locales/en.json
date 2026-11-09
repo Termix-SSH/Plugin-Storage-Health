@@ -137,6 +137,31 @@
       "readOnly": {
         "label": "Read only",
         "description": "Block self tests and scrubs from Termix."
+      },
+      "showPanel": {
+        "label": "Show the side panel",
+        "description": "Offer the Storage health panel beside terminals on this host."
+      }
+    },
+    "user": {
+      "companionAutoOpen": {
+        "label": "Open the Storage health panel with terminals",
+        "description": "Open the panel by itself on hosts that have it."
+      },
+      "companionSide": {
+        "label": "Panel side",
+        "description": "Where the Storage health panel opens beside a terminal.",
+        "right": "Right",
+        "left": "Left",
+        "bottom": "Bottom"
+      },
+      "companionSize": {
+        "label": "Panel size",
+        "description": "Width or height of the panel in pixels."
+      },
+      "companionEdgeButton": {
+        "label": "Show the edge button",
+        "description": "Show a small button on the edge of the terminal to open the panel."
       }
     }
   },
@@ -188,5 +213,8 @@
       "smartFailing": "Drive failing its SMART check",
       "raidDegraded": "Pool or array degraded"
     }
+  },
+  "companion": {
+    "toggle": "Storage health panel"
   }
 }

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { useToast, useTranslation } from "@termix-ssh/plugin-sdk/frontend";
-import { Button, TabStrip } from "@termix-ssh/plugin-sdk/ui";
+import { Button, TabStrip, LoadingState } from "@termix-ssh/plugin-sdk/ui";
 import {
   errorCode,
   errorMessage,
@@ -80,9 +80,7 @@ export function StoragePanel({
     return <p className="px-3 py-2 text-xs text-destructive">{error}</p>;
   }
   if (!data) {
-    return (
-      <p className="p-2 text-xs text-muted-foreground">{t("common.loading")}</p>
-    );
+    return <LoadingState compact label={t("common.loading")} />;
   }
 
   const tabs: Array<{ id: View; label: string; count?: number }> = [
@@ -106,27 +104,29 @@ export function StoragePanel({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <TabStrip
-        tabs={tabs}
-        activeTab={view}
-        onTabChange={(id) => setView(id as View)}
-        trailing={
-          <span className="flex items-center gap-2 text-[11px] text-muted-foreground">
-            {data.readAt
-              ? t("tab.readAgo", { time: timeAgo(data.readAt) })
-              : ""}
-            <Button
-              size="xs"
-              variant="ghost"
-              aria-label={t("common.refresh")}
-              disabled={busy}
-              onClick={() => void refresh()}
-            >
-              <RefreshCw className={`size-3 ${busy ? "animate-spin" : ""}`} />
-            </Button>
-          </span>
-        }
-      />
+      <div className="shrink-0 border-b border-border px-1">
+        <TabStrip
+          tabs={tabs}
+          activeTab={view}
+          onTabChange={(id) => setView(id as View)}
+          trailing={
+            <span className="flex items-center gap-2 text-[11px] text-muted-foreground">
+              {data.readAt
+                ? t("tab.readAgo", { time: timeAgo(data.readAt) })
+                : ""}
+              <Button
+                size="xs"
+                variant="ghost"
+                aria-label={t("common.refresh")}
+                disabled={busy}
+                onClick={() => void refresh()}
+              >
+                <RefreshCw className={`size-3 ${busy ? "animate-spin" : ""}`} />
+              </Button>
+            </span>
+          }
+        />
+      </div>
       {data.error && data.reading && (
         <p className="border-b border-border px-3 py-2 text-xs text-destructive">
           {t("tab.stale", { error: data.error })}

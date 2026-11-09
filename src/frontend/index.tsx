@@ -2,10 +2,15 @@ import type { ComponentType } from "react";
 import { HardDrive } from "lucide-react";
 import type { TermixApp } from "@termix-ssh/plugin-sdk/frontend";
 import { initApi } from "./api";
-import { enabled } from "./format";
+import { enabled, panelEnabled } from "./format";
 import { StorageHostsCard } from "./StorageHostsCard";
 import { StorageManagerCard } from "./StorageManagerCard";
 import { StorageTab } from "./StorageTab";
+import { storageWidget } from "./StorageWidget";
+import {
+  StorageCompanion,
+  useStorageCompanionDefaults,
+} from "./StorageCompanion";
 
 const TAB_ID = "storage-health";
 
@@ -52,5 +57,37 @@ export function activate(app: TermixApp): void {
     component: StorageManagerCard as unknown as ComponentType<
       Record<string, unknown>
     >,
+  });
+  app.registerExtension("homepage.widgets", storageWidget);
+
+  app.registerCompanion(TAB_ID, StorageCompanion, {
+    icon: HardDrive,
+    titleKey: "tab.title",
+    order: 58,
+    tabTypes: ["terminal"],
+    when: (_tab, host) => canUse && !!host?.enableSsh && panelEnabled(host),
+    useDefaults: useStorageCompanionDefaults,
+  });
+  app.registerAction(`${TAB_ID}.togglePanel`, ((
+    _handle: unknown,
+    tab: unknown,
+  ) => app.toggleCompanion(tab as never, TAB_ID)) as never);
+  app.registerSlotContribution("tab.menu", {
+    actionId: `${TAB_ID}.togglePanel`,
+    titleKey: "companion.toggle",
+    icon: HardDrive,
+    kind: "button",
+    order: 58,
+    when: (context) => {
+      const tab = context.tab as {
+        type?: string;
+        host?: unknown;
+        hostConfig?: unknown;
+      } | null;
+      return (
+        tab?.type === "terminal" &&
+        panelEnabled((tab.host ?? tab.hostConfig) as object)
+      );
+    },
   });
 }
