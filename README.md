@@ -7,6 +7,9 @@
 <p>Watch drive and array health over SSH: SMART, NVMe, ZFS, mdadm, btrfs and LVM, with history, alerts and self tests</p>
 
 <!-- VIDEO:START -->
+
+<a href="https://www.youtube.com/watch?v=M9sktdi3dkw"><img src="https://img.shields.io/badge/Watch_the_demo-f59145?style=for-the-badge&logo=youtube&logoColor=white" alt="Watch the demo on YouTube" /></a>
+
 <!-- VIDEO:END -->
 
 </div>
