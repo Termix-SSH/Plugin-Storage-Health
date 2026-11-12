@@ -1,0 +1,73 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Termix-SSH/Termix/main/scripts/authz/authz.schema.json",
+  "seed": [],
+  "routes": {
+    "GET /plugin-api/storage-health/:hostId": {
+      "access": "user",
+      "permission": "storage-health.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      }
+    },
+    "PUT /plugin-api/storage-health/:hostId/config": {
+      "access": "user",
+      "permission": "storage-health.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      }
+    },
+    "GET /plugin-api/storage-health/:hostId/events": {
+      "access": "user",
+      "permission": "storage-health.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      }
+    },
+    "GET /plugin-api/storage-health/:hostId/history": {
+      "access": "user",
+      "permission": "storage-health.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      }
+    },
+    "POST /plugin-api/storage-health/:hostId/refresh": {
+      "access": "user",
+      "permission": "storage-health.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      }
+    },
+    "POST /plugin-api/storage-health/:hostId/scrub": {
+      "access": "user",
+      "permission": ["storage-health.use", "storage-health.run-tests"],
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      }
+    },
+    "POST /plugin-api/storage-health/:hostId/selftest": {
+      "access": "user",
+      "permission": ["storage-health.use", "storage-health.run-tests"],
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      }
+    },
+    "GET /plugin-api/storage-health/summary": {
+      "access": "user",
+      "permission": "storage-health.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect",
+        "key": "hostId"
+      },
+      "filtered": true,
+      "note": "Lists only what the caller may see"
+    }
+  }
+}
